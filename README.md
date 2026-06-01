@@ -1,94 +1,106 @@
 # 8D Pattern Awareness
 
-> Turn health notes into clear 8D signals, confidence levels, and safe next steps — without diagnosis.
+Non-diagnostic health pattern review skill for AI agents. Maps unstructured health inputs (journal entries, check-ins, voice transcripts) to 8 dimensions of wellness with explicit confidence levels, safe next steps, and escalation guardrails.
 
-## What this is
+Published on [ClawHub](https://clawhub.ai) and [ClawSouls](https://clawsouls.ai) under `@divinity-science`.
 
-A ClawdHub **skill** and **soul** for AI agents that review health notes through 8 dimensions of wellness. The agent maps messy input (journal entries, check-ins, transcripts) into structured, confidence-aware pattern reviews.
+## Architecture
 
-### The 8 Dimensions
+The system is three files with distinct responsibilities:
 
-| Abbr | Dimension | Covers |
-|------|-----------|--------|
-| **PSY** | Psychological | mood, stress, emotional load, regulation |
-| **PHY** | Physical | sleep, fueling, movement, recovery, body state |
-| **ENV** | Environment | friction, structure, space, tools, surroundings |
-| **SOC** | Social | connection, conflict, support, isolation |
-| **SPI** | Spiritual | meaning, motivation, purpose, values, alignment |
-| **INT** | Intellectual | focus, problem solving, learning, cognitive load |
-| **VOC** | Vocational | execution, follow-through, momentum, completion |
-| **FIN** | Financial | spending pressure, resource stress, sustainability |
+| File | Package | Purpose |
+|------|---------|---------|
+| `SKILL.md` | `8d-pattern-awareness` (ClawHub) | Operational workflow. Signal mapping rules, output contract, evidence discipline, reporting lifecycle, worked examples. |
+| `SOUL.md` | `8d-pattern-awareness` (ClawSouls) | Agent identity. Truth policy, persona lattice (7 lenses), talent gate, repair protocol, audit points. |
+| `8d-dimensions-guide.md` | bundled with skill | Canonical reference. Dimension definitions, abbreviations, human keyword cues for all 8 dimensions. Referenced frequently by both SKILL and SOUL. |
 
-## What this is NOT
+The skill defines *what* the agent does. The soul defines *how* the agent thinks. The dimensions guide is the shared taxonomy.
 
-- Not a diagnosis engine
-- Not a treatment planner
-- Not a replacement for clinicians
-- Not a medication recommendation system
+## The 8 Dimensions
 
-## Package Structure
+| Code | Dimension | Signal Domain |
+|------|-----------|---------------|
+| PSY | Psychological | mood, stress, emotional load, regulation |
+| PHY | Physical | sleep, fueling, movement, recovery, body state |
+| ENV | Environment | friction, structure, space, tools, surroundings |
+| SOC | Social | connection, conflict, support, isolation |
+| SPI | Spiritual | meaning, motivation, purpose, values, alignment |
+| INT | Intellectual | focus, problem solving, learning, cognitive load |
+| VOC | Vocational | execution, follow-through, momentum, completion |
+| FIN | Financial | spending pressure, resource stress, sustainability |
+
+## Output Contract
+
+Every response follows a fixed structure:
 
 ```
-8d-pattern-awareness/          ← ClawdHub Skill
-├── SKILL.md                   ← Operational workflow + output contract
-└── 8d-dimensions-guide.md     ← Canonical dimension definitions + cues
-
-8d-pattern-awareness-soul/     ← ClawSouls Soul (separate package)
-├── SOUL.md                    ← Agent identity, truth policy, repair rails
-└── soul.json                  ← Soul manifest
+Snapshot       one or two lines on what stands out
+8D signals     relevant dimensions + brief rationale
+Confidence     high / medium / low + one-phrase explanation
+Interpretation narrow, non-diagnostic, tied to evidence
+Safe next step one concrete, low-risk action
+Watch-outs     red flags if present, explicit "none" if not
 ```
+
+Confidence is always explicit. Missing data is never backfilled. Sparse input narrows the interpretation rather than forcing completeness.
+
+## Safety Model
+
+The skill refuses diagnosis, treatment planning, medication changes, and provider impersonation. If red flags appear in the input, the review stops and the agent escalates to professional care.
+
+The truth policy is non-negotiable: no invented facts, no laundering inference as evidence, no silently upgrading uncertainty into certainty.
 
 ## Install
 
-### Skill (via ClawdHub)
 ```bash
+# Skill
 clawhub install divinity-science/8d-pattern-awareness
-```
 
-### Soul (via ClawSouls)
-```bash
+# Soul
 npx clawsouls install divinity-science/8d-pattern-awareness
 ```
 
-## How it works
-
-1. Agent reads the health note
-2. Maps signals to the 8D lens using the dimensions guide
-3. Assigns a confidence level (high / medium / low)
-4. Writes one narrow, non-diagnostic interpretation
-5. Gives one safe, actionable next step
-6. Flags watch-outs only when warranted
-
-### Example Output
+## Repo Structure
 
 ```
-Snapshot: Sleep debt and cognitive load are the main signals.
-8D signals: PHY, INT, VOC
-Confidence: medium — the note is sparse
-What may be going on: Recovery is lagging behind demand
-Safe next step: Simplify the day and protect sleep
-Watch-outs: No red flags mentioned
+.
+├── README.md
+├── 8d-pattern-awareness/           # ClawHub skill package
+│   ├── SKILL.md
+│   └── 8d-dimensions-guide.md
+└── 8d-pattern-awareness-soul/      # ClawSouls soul package
+    ├── SOUL.md
+    └── soul.json
 ```
 
-## Safety
+## Publish
 
-- Never crosses into diagnosis or medical certainty
-- Stops the review and escalates when red flags appear
-- Keeps confidence explicit when evidence is thin
-- Never invents missing facts or backfills data
+```bash
+# Skill to ClawHub
+clawhub sync --all --owner divinity-science
 
-## Related Projects
+# Soul to ClawSouls
+npx clawsouls publish ./8d-pattern-awareness-soul/
+```
 
-> These are planned — issues are tracked in this repo.
+## Related Skills (Planned)
 
-- Scientific Methodology Review & Consolidation
-- Health Scoring Daily Pipeline
-- Clinical Provider Document Generation
+Tracked as issues in this repo:
+
+- [#1 Scientific Methodology Review and Consolidation](https://github.com/divinity-science/8d-pattern-awareness/issues/1)
+- [#2 Health Scoring Daily Pipeline](https://github.com/divinity-science/8d-pattern-awareness/issues/2)
+- [#3 Clinical Provider Document Generation](https://github.com/divinity-science/8d-pattern-awareness/issues/3)
+
+## Design Decisions
+
+**Why separate SKILL and SOUL?** The skill is the operational playbook. The soul is the agent's durable identity. Keeping them separate means you can swap the workflow without losing the truth policy, or adopt the identity without the specific 8D methodology.
+
+**Why a separate dimensions guide?** The 8D taxonomy is referenced by both SKILL and SOUL. Centralizing it in one file prevents drift between the two and gives agents a single source of truth for dimension definitions and human keyword cues.
+
+**Why explicit confidence levels?** Health data from self-reports is inherently noisy. Forcing the agent to state confidence on every review prevents overreach on sparse evidence and keeps the user informed about interpretation limits.
+
+**Why no scores?** Numeric scores imply precision that self-reported data cannot support. The skill uses signal mapping (which dimensions are relevant) rather than scoring (how much of each dimension), unless the input explicitly supports a scoring framework.
 
 ## License
 
-Published on ClawdHub under [MIT-0](https://opensource.org/license/mit-0). Attribution not required.
-
-## Published by
-
-[Divinity Science](https://github.com/divinity-science) — `@divinity-science` on ClawdHub
+MIT-0. No attribution required.
