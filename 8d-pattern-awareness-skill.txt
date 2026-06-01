@@ -1,25 +1,24 @@
 ---
 name: 8d-pattern-awareness
-description: Turn health notes, transcripts, or check-ins into non-diagnostic 8D pattern reviews with confidence levels and safe next steps.
+description: Use when turning health notes, transcripts, or check-ins into a non-diagnostic 8D-aware pattern review. Map signals to dimensions, state confidence, and give safe next steps without medical claims.
 version: 1.0.0
+author: Hermes Agent
+license: MIT
 metadata:
-  openclaw:
-    emoji: "🧭"
-    homepage: https://github.com/divinity-science/8d-pattern-awareness
-    tags: [health, wellness, pattern-review, non-diagnostic, 8d, confidence, safety]
+  hermes:
+    tags: [health, 8d, pattern-review, non-diagnostic, confidence, product-design]
+    related_skills: [scientific-methodology-review-and-consolidation, health-scoring-daily-pipeline, clinical-provider-document-generation]
 ---
 
 # 8D Pattern Awareness
 
 ## Overview
 
-Use this skill to turn messy health notes, voice transcripts, daily check-ins, or short journal entries into a clear, non-diagnostic pattern review organized around the **8 dimensions of wellness** (8D).
+Use this skill to turn messy health notes, voice transcripts, daily check-ins, or short journal entries into a clear, non-diagnostic pattern review that is organized around the 8 dimensions.
 
 This is a general-purpose health pattern review skill. It is designed to be useful on its own while staying conservative about uncertainty and evidence.
 
-> **Reference:** The full dimension definitions, abbreviations, and human keyword cues are in `8d-dimensions-guide.md`. Read that file before interpreting any health input.
-
-The output should feel like a careful health review, not a chatbot. Write with a calm, credible, human-readable tone. Be direct. Be specific. Do not sound rehearsed. Do not sound like a medical disclaimer machine. Do not pretend to be human or licensed.
+The output should feel like a careful health output, not a chatbot. Write with a calm, credible, human-readable tone. Be direct. Be specific. Do not sound rehearsed. Do not sound like a medical disclaimer machine. Do not pretend to be human or licensed.
 
 ## When to Use
 
@@ -82,7 +81,7 @@ If the draft cannot support that promise, narrow it. If the user wants more than
 
 ## Expertise Standard
 
-Treat the reviewing agent like a lead-brain specialist for this task: highly fluent in psychology, behavior, and the 8 dimensions of wellness as defined in `8d-dimensions-guide.md`, with strong pattern-recognition and synthesis skills.
+Treat the reviewing agent like a lead-brain specialist for this task: highly fluent in psychology, behavior, and the 8 dimensions of wellness, with strong pattern-recognition and synthesis skills.
 
 The reviewer should:
 - reason like an expert, not a generic assistant
@@ -92,7 +91,7 @@ The reviewer should:
 - say when more memory or history would materially improve confidence
 - stay grounded and never fake expertise, credentials, or certainty
 
-If the input suggests the user's AI is missing context, the reviewer should call that out plainly and ask whether the user wants to add or strengthen memory/context support.
+If the input suggests the user’s AI is missing context, the reviewer should call that out plainly and ask whether the user wants to add or strengthen memory/context support.
 
 ## Evidence Rules
 
@@ -132,8 +131,6 @@ When evidence is thin:
 
 Use the 8D lens as a *signal map*, not as a medical scoring engine.
 
-> **Reference:** For full dimension definitions, abbreviations, and human keyword cues, see `8d-dimensions-guide.md`. That file is the canonical mapping reference for this skill.
-
 The dimensions are interpreted like this:
 - **PSY**: mood, stress, emotional load, regulation
 - **PHY**: sleep, fueling, movement, recovery, body state
@@ -152,10 +149,11 @@ Rules:
 - if the note is mainly behavioral, keep the interpretation behavioral
 - if the note is mainly contextual, keep the interpretation contextual
 
+The detailed signal map and output pattern live in the linked reference file.
+
 ## Personalization Ladder
 
-Use a simple ladder when the user has multiple days or repeated notes. Start with population defaults from the cue lists in `8d-dimensions-guide.md`, then build upward:
-
+Use a simple ladder when the user has multiple days or repeated notes:
 1. population defaults
 2. user-specific patterns
 3. current context
@@ -165,7 +163,7 @@ Do not jump straight to deep personalization on sparse evidence.
 
 ## Output Contract
 
-Every response should use the same structure. Use the abbreviations and signal cues from `8d-dimensions-guide.md` when labeling dimensions.
+Every response should use the same structure:
 
 1. **Snapshot**
    - one or two lines that say what stands out
@@ -273,30 +271,18 @@ When reporting is recurring:
 - only call something a trend after at least two real comparisons or three visible points
 - if the window changes, label the comparison as approximate
 
-## Workflow
+## Release Standard
 
-1. Read the input once for the big picture.
-2. Mark the strongest signals.
-3. Map signals to the 8D lens using the dimension definitions in `8d-dimensions-guide.md`.
-4. Decide confidence based on evidence breadth and clarity.
-5. Write one narrow interpretation.
-6. Add one safe next step.
-7. Add watch-outs only if warranted.
-8. Keep the final answer short enough to be useful immediately.
+This skill is ready to ship only when all of the following are true:
+- the title and package name match the intended 8D identity
+- the output structure is stable and skimmable
+- reporting mode has baseline, comparison, and trend behavior
+- the skill includes worked examples for normal, thin, and urgent inputs
+- the skill avoids diagnosis, treatment, and invented evidence
+- the tone is human-readable and usable in under a minute
+- the skill and SOUL remain aligned on the same safety and identity rules
 
-## Self-Healing Protocols
-
-If the draft drifts away from the user's requested shape, repair the drift before sending.
-
-Protocol:
-1. Preserve the last approved structure unless the user explicitly asks for a broader rewrite.
-2. Change only the requested field or rule when the user asks for a narrow edit. Do not add unrelated wording changes, optional enhancement lists, or section rewrites unless the user explicitly asks for them.
-3. If a section becomes inconsistent, fix that section surgically rather than rewriting the whole file.
-4. If evidence is thin, lower confidence instead of inventing completion.
-5. If the user corrects the draft, acknowledge the correction and repair the file without reintroducing the same mistake.
-6. If a response is not reviewable, self-correct into a cleaner, simpler, more faithful version.
-
-Self-healing means the skill can notice drift, isolate the error, and restore the requested shape without adding new scope.
+If any of those are missing, fix them before release.
 
 ## Safety and Escalation
 
@@ -308,7 +294,7 @@ If the input suggests urgent or potentially serious symptoms, the skill should:
 - encourage immediate care or emergency services when appropriate
 - avoid giving the impression that a pattern review is enough
 
-This includes any case where a red flag is clear from the user's words.
+This includes any case where a red flag is clear from the user’s words.
 
 ## Output Tone Guidelines
 
@@ -323,12 +309,37 @@ Bad outputs sound like this:
 - "As an AI, I cannot..." repeated in every paragraph
 - long, polished paragraphs that read like synthetic filler
 
+## Workflow
+
+1. Read the input once for the big picture.
+2. Mark the strongest signals.
+3. Map signals to the 8D lens.
+4. Decide confidence based on evidence breadth and clarity.
+5. Write one narrow interpretation.
+6. Add one safe next step.
+7. Add watch-outs only if warranted.
+8. Keep the final answer short enough to be useful immediately.
+
+## Self-Healing Protocols
+
+If the draft drifts away from the user’s requested shape, repair the drift before sending.
+
+Protocol:
+1. Preserve the last approved structure unless the user explicitly asks for a broader rewrite.
+2. Change only the requested field or rule when the user asks for a narrow edit. Do not add unrelated wording changes, optional enhancement lists, or section rewrites unless the user explicitly asks for them.
+3. If a section becomes inconsistent, fix that section surgically rather than rewriting the whole file.
+4. If evidence is thin, lower confidence instead of inventing completion.
+5. If the user corrects the draft, acknowledge the correction and repair the file without reintroducing the same mistake.
+6. If a response is not reviewable, self-correct into a cleaner, simpler, more faithful version.
+
+Self-healing means the skill can notice drift, isolate the error, and restore the requested shape without adding new scope.
+
 ## Quality Bar
 
 Before sending, check:
 - Does this avoid diagnosis language?
 - Does it stay within the evidence?
-- Does it use a clear 8D lens per `8d-dimensions-guide.md` without forcing scores?
+- Does it use a clear 8D lens without forcing scores?
 - Does it sound natural and not AI-stamped?
 - Is there exactly one practical next step?
 - Would a real user understand it in under a minute?
@@ -339,7 +350,7 @@ Before sending, check:
    - Fix: reduce scope and confidence.
 
 2. **Using every dimension on every note**
-   - Fix: only name the dimensions that genuinely matter. Refer to `8d-dimensions-guide.md` for which dimensions fit the user's actual language.
+   - Fix: only name the dimensions that genuinely matter.
 
 3. **Sounding like a disclaimer stack**
    - Fix: write one clean safety statement, then move on.
@@ -355,19 +366,6 @@ Before sending, check:
 
 7. **Accidentally implying licensure or diagnosis authority**
    - Fix: never claim human status, credentials, or medical authority.
-
-## Release Standard
-
-This skill is ready to ship only when all of the following are true:
-- the title and package name match the intended 8D identity
-- the output structure is stable and skimmable
-- reporting mode has baseline, comparison, and trend behavior
-- the skill includes worked examples for normal, thin, and urgent inputs
-- the skill avoids diagnosis, treatment, and invented evidence
-- the tone is human-readable and usable in under a minute
-- the skill and SOUL remain aligned on the same safety and identity rules
-
-If any of those are missing, fix them before release.
 
 ## Verification Checklist
 
